@@ -6,29 +6,27 @@
 /*   By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/02 02:01:22 by alida-si          #+#    #+#             */
-/*   Updated: 2022/04/12 21:36:20 by alida-si         ###   ########.fr       */
+/*   Updated: 2022/04/14 03:59:44 by alida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	check_args(int argc, char *argv[])
+int	open_files(int argc, char *argv[], t_pipex *p)
 {
-	int fd;
-
-	if (argc != 5)
-		return (error_msg("Invalid number of arguments\n"));
 	if (access(argv[1], R_OK) == -1)
 		return (error_msg("Can't open infile\n"));
 	if (access(argv[argc - 1], W_OK) == -1)
 	{
-		fd = open(argv[argc - 1], O_CREAT, 0777);
-		if (fd == -1)
+		p->fdout = open(argv[argc - 1], O_CREAT, 0777);
+		if (p->fdout == -1)
 		{
-			close(fd);
+			close(p->fdout);
 			return (error_msg("Can't creat outfile\n"));
 		}
 	}
+	p->fdout = open(argv[argc - 1], O_WRONLY);
+	p->fdin = open(argv[1], O_RDONLY);
 	return (1);
 }
 
@@ -38,9 +36,9 @@ void	get_path(t_pipex *p)
 	char	*aux;
 
 	i = 0;
-	while(p->envp[i])
+	while (p->envp[i])
 	{
-		if(ft_strncmp("PATH", p->envp[i], 4) == 0)
+		if (ft_strncmp("PATH", p->envp[i], 4) == 0)
 			aux = p->envp[i];
 		i++;
 	}

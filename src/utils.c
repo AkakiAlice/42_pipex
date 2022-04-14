@@ -6,11 +6,27 @@
 /*   By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/02 02:08:00 by alida-si          #+#    #+#             */
-/*   Updated: 2022/04/02 02:08:26 by alida-si         ###   ########.fr       */
+/*   Updated: 2022/04/13 23:51:20 by alida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+void	free_cmds(t_pipex *p)
+{
+	int	i;
+
+	if (p->cmds)
+	{
+		i = 0;
+		while (p->cmds[i])
+		{
+			free_matrix(p->cmds[i]);
+			i++;
+		}
+		free(p->cmds);
+	}
+}
 
 void	free_matrix(char **ptr)
 {

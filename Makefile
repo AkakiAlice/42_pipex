@@ -6,7 +6,7 @@
 #    By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/29 18:20:49 by alida-si          #+#    #+#              #
-#    Updated: 2022/04/02 02:07:53 by alida-si         ###   ########.fr        #
+#    Updated: 2022/04/14 03:47:36 by alida-si         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,7 @@ RM_DIR =	rm -rf
 all:		$(NAME)
 
 $(NAME):	$(LIBFT) $(OBJ)
-			$(CC) $(CCFLAGS) -o $(NAME) $(OBJ) $(LIBFLAGS)
+			$(CC) $(CCFLAGS) -g -o $(NAME) $(OBJ) $(LIBFLAGS)
 
 $(OBJ_DIR)/%.o:	$(SRC_DIR)/%.c
 				mkdir -p $(OBJ_DIR)

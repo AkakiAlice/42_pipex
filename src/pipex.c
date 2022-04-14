@@ -6,7 +6,7 @@
 /*   By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 18:19:47 by alida-si          #+#    #+#             */
-/*   Updated: 2022/04/13 01:25:44 by alida-si         ###   ########.fr       */
+/*   Updated: 2022/04/14 05:32:48 by alida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,14 @@ int	check_cmd(t_pipex *p, int i)
 		if (access(p->path, F_OK) == 0)
 		{
 			free(aux);
-			return(1);
+			return (1);
 		}
 		free(p->path);
 		j++;
 	}
 	free(aux);
 	free_matrix(p->env_list);
-	return(0);
+	return (0);
 }
 
 int	get_comand(t_pipex *p)
@@ -50,7 +50,7 @@ int	get_comand(t_pipex *p)
 		j++;
 	}
 	p->cmds[j] = NULL;
-	return(1);
+	return (1);
 }
 
 void	exec_child(t_pipex *p, char **cmd, int index)
@@ -72,11 +72,16 @@ void	exec_child(t_pipex *p, char **cmd, int index)
 
 int	teste(t_pipex *p)
 {
-	int i = 0;
-	int pid;
+	int	i;
+	int	pid;
+
+	i = 0;
 	while (p->cmds[i])
 	{
-		check_cmd(p, i);
+		if (!check_cmd(p, i))
+		{
+			return (error_msg("Invalid comand\n"));
+		}
 		pipe(p->pipe_fd);
 		pid = fork();
 		if (pid == 0)
@@ -85,20 +90,30 @@ int	teste(t_pipex *p)
 		dup2(p->pipe_fd[0], 0);
 		close(p->pipe_fd[0]);
 		close(p->pipe_fd[1]);
+		free(p->path);
 		i++;
 	}
-	return(1);
+	return (1);
 }
 
 int	main(int argc, char *argv[], char *envp[])
 {
 	t_pipex	p;
 
-	if (!check_args(argc, argv))
-		return (1);
-	init_struct(&p, argc, argv, envp);
-	p.fdout = open(argv[argc - 1], O_WRONLY);
-	p.fdin = open(argv[1], O_RDONLY);
-	teste(&p);
-	return (0);
+	if (argc == 5)
+	{
+		if (!open_files(argc, argv, &p))
+			return (1);
+		init_struct(&p, argc, argv, envp);
+		if (!teste(&p))
+		{
+			free_cmds(&p);
+			return (1);
+		}
+		free_matrix(p.env_list);
+		free_cmds(&p);
+		return (0);
+	}
+	error_msg("Invalid number of arguments\n");
+	return (1);
 }

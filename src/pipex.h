@@ -6,7 +6,7 @@
 /*   By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 18:20:27 by alida-si          #+#    #+#             */
-/*   Updated: 2022/04/13 01:30:16 by alida-si         ###   ########.fr       */
+/*   Updated: 2022/04/14 02:32:54 by alida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,9 @@ void	get_path(t_pipex *p);
 int		check_cmd(t_pipex *p, int i);
 void	init_struct(t_pipex *p, int argc, char *argv[], char *envp[]);
 void	free_matrix(char **ptr);
+void	free_cmds(t_pipex *p);
 int		error_msg(char *error_str);
 int		get_comand(t_pipex *p);
+int		open_files(int argc, char *argv[], t_pipex *p);
 
 #endif
