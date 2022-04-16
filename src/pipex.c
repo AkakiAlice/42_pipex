@@ -6,7 +6,7 @@
 /*   By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 18:19:47 by alida-si          #+#    #+#             */
-/*   Updated: 2022/04/14 05:32:48 by alida-si         ###   ########.fr       */
+/*   Updated: 2022/04/16 20:47:04 by alida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,15 +59,32 @@ void	exec_child(t_pipex *p, char **cmd, int index)
 	if (index == 0)
 	{
 		dup2(p->fdin, 0);
+		close(p->fdin);
+		close(p->fdout);
 	}
 	if (index == 1)
 	{
 		dup2(p->fdout, 1);
+		close(p->fdin);
+		close(p->fdout);
 	}
 	else
 		dup2(p->pipe_fd[1], 1);
 	close(p->pipe_fd[1]);
-	execve(p->path, cmd, NULL);
+	if (execve(p->path, cmd, NULL) == -1)
+	{
+		error_msg("Error execve\n");
+		exit(0);
+	}
+}
+
+void	parent(t_pipex *p)
+{
+	dup2(p->pipe_fd[0], 0);
+	close(p->pipe_fd[0]);
+	close(p->pipe_fd[1]);
+	close(p->fdin);
+	free(p->path);
 }
 
 int	teste(t_pipex *p)
@@ -79,18 +96,16 @@ int	teste(t_pipex *p)
 	while (p->cmds[i])
 	{
 		if (!check_cmd(p, i))
-		{
 			return (error_msg("Invalid comand\n"));
-		}
-		pipe(p->pipe_fd);
+		if (pipe(p->pipe_fd) == -1)
+			return (error_msg("Pipe error\n"));
 		pid = fork();
+		if (pid < 0)
+			return (error_msg("Fork error\n"));
 		if (pid == 0)
 			exec_child(p, p->cmds[i], i);
 		waitpid(pid, NULL, 0);
-		dup2(p->pipe_fd[0], 0);
-		close(p->pipe_fd[0]);
-		close(p->pipe_fd[1]);
-		free(p->path);
+		parent(p);
 		i++;
 	}
 	return (1);
@@ -110,6 +125,7 @@ int	main(int argc, char *argv[], char *envp[])
 			free_cmds(&p);
 			return (1);
 		}
+		close(p.fdout);
 		free_matrix(p.env_list);
 		free_cmds(&p);
 		return (0);
