@@ -6,7 +6,7 @@
 /*   By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/30 19:35:46 by alida-si          #+#    #+#             */
-/*   Updated: 2022/03/29 18:14:31 by alida-si         ###   ########.fr       */
+/*   Updated: 2022/04/19 22:31:13 by alida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,5 +87,6 @@ int		do_read(int fd, char **buffer, char **save);
 char	*extract_line(char **save);
 int		ft_strrncmp(const char *s1, const char *s2, size_t len);
 char	*ft_strcat(char *s1, char *s2);
+char	**ft_split2(char const *s, char c);
 
 #endif

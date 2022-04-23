@@ -6,7 +6,7 @@
 #    By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/07/30 19:35:16 by alida-si          #+#    #+#              #
-#    Updated: 2022/03/29 18:15:07 by alida-si         ###   ########.fr        #
+#    Updated: 2022/04/19 22:31:27 by alida-si         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -54,6 +54,7 @@ SRC	=	ft_isalnum.c \
 		get_next_line.c \
 		ft_strrncmp.c \
 		ft_strcat.c \
+		ft_split2.c \
 
 OBJ	= $(SRC:.c=.o)
 

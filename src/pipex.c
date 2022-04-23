@@ -6,7 +6,7 @@
 /*   By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 18:19:47 by alida-si          #+#    #+#             */
-/*   Updated: 2022/04/16 20:47:04 by alida-si         ###   ########.fr       */
+/*   Updated: 2022/04/23 01:41:15 by alida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	get_comand(t_pipex *p)
 	p->cmds = (char ***)malloc(((p->argc - 2) * sizeof(char **)));
 	while (i < (p->argc - 1))
 	{
-		p->cmds[j] = ft_split(p->argv[i], ' ');
+		p->cmds[j] = ft_split2(p->argv[i], ' ');
 		i++;
 		j++;
 	}
@@ -96,7 +96,11 @@ int	teste(t_pipex *p)
 	while (p->cmds[i])
 	{
 		if (!check_cmd(p, i))
-			return (error_msg("Invalid comand\n"));
+		{
+			write(2, p->cmds[i][0], ft_strlen(p->cmds[i][0]));
+			write(2, ": command not found", 19);
+			return (0);
+		}
 		if (pipe(p->pipe_fd) == -1)
 			return (error_msg("Pipe error\n"));
 		pid = fork();

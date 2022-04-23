@@ -6,7 +6,7 @@
 /*   By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 18:20:27 by alida-si          #+#    #+#             */
-/*   Updated: 2022/04/14 02:32:54 by alida-si         ###   ########.fr       */
+/*   Updated: 2022/04/20 23:23:40 by alida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 # include ".././libft/libft.h"
 # include <sys/wait.h>
+# include <errno.h>
+# include <stdio.h>
 
 typedef struct s_pipex
 {
