@@ -6,7 +6,7 @@
 /*   By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 18:19:47 by alida-si          #+#    #+#             */
-/*   Updated: 2022/04/23 01:41:15 by alida-si         ###   ########.fr       */
+/*   Updated: 2022/04/24 00:16:41 by alida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,8 +121,7 @@ int	main(int argc, char *argv[], char *envp[])
 
 	if (argc == 5)
 	{
-		if (!open_files(argc, argv, &p))
-			return (1);
+		open_files(argc, argv, &p);
 		init_struct(&p, argc, argv, envp);
 		if (!teste(&p))
 		{

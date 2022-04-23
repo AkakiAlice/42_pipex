@@ -6,29 +6,27 @@
 /*   By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/02 02:01:22 by alida-si          #+#    #+#             */
-/*   Updated: 2022/04/23 00:52:08 by alida-si         ###   ########.fr       */
+/*   Updated: 2022/04/24 00:22:50 by alida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	open_files(int argc, char *argv[], t_pipex *p)
+void	open_files(int argc, char *argv[], t_pipex *p)
 {
 	p->fdin = open(argv[1], O_RDONLY);
-	if (p->fdin == -1 )
+	if (p->fdin < 0)
 	{
 		perror(argv[1]);
-		return(0);
+		exit(0);
 	}
 	p->fdout = open(argv[argc - 1], O_RDWR | O_CREAT | O_TRUNC, 0777);
-	if (p->fdout == -1)
+	if (p->fdout < 0)
 	{
 		close(p->fdout);
-		close(p->fdout);
 		perror(argv[argc - 1]);
-		return (0);
+		exit(EXIT_FAILURE);
 	}
-	return (1);
 }
 
 void	get_path(t_pipex *p)
