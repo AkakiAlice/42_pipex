@@ -6,7 +6,7 @@
 /*   By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 18:19:47 by alida-si          #+#    #+#             */
-/*   Updated: 2022/04/24 00:16:41 by alida-si         ###   ########.fr       */
+/*   Updated: 2022/04/25 21:42:03 by alida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,27 @@
 
 int	check_cmd(t_pipex *p, int i)
 {
-	char	*aux;
+	//char	*aux;
 	int		j;
-
-	aux = ft_strjoin("/", p->cmds[i][0]);
+	/*if (i == 1 && p->path != NULL)
+		free(p->path);*/
+	p->aux = ft_strjoin("/", p->cmds[i][0]);
 	j = 0;
 	while (p->env_list[j])
 	{
-		p->path = ft_strjoin(p->env_list[j], aux);
+		p->path = ft_strjoin(p->env_list[j], p->aux);
 		if (access(p->path, F_OK) == 0)
 		{
-			free(aux);
+			free(p->aux);
 			return (1);
 		}
 		free(p->path);
 		j++;
 	}
-	free(aux);
-	free_matrix(p->env_list);
+	if (p->aux != NULL)
+		free(p->aux);
+	/*if (p->env_list != NULL)
+		free_matrix(p->env_list);*/
 	return (0);
 }
 
@@ -73,7 +76,6 @@ void	exec_child(t_pipex *p, char **cmd, int index)
 	close(p->pipe_fd[1]);
 	if (execve(p->path, cmd, NULL) == -1)
 	{
-		error_msg("Error execve\n");
 		exit(0);
 	}
 }
@@ -84,11 +86,13 @@ void	parent(t_pipex *p)
 	close(p->pipe_fd[0]);
 	close(p->pipe_fd[1]);
 	close(p->fdin);
-	free(p->path);
+	/*if (p->path != NULL)
+		free(p->path);*/
 }
 
 int	teste(t_pipex *p)
 {
+	int	wstatus;
 	int	i;
 	int	pid;
 
@@ -98,8 +102,9 @@ int	teste(t_pipex *p)
 		if (!check_cmd(p, i))
 		{
 			write(2, p->cmds[i][0], ft_strlen(p->cmds[i][0]));
-			write(2, ": command not found", 19);
-			return (0);
+			write(2, ": command not found\n", 20);
+			if (i == 1)
+				exit(127);
 		}
 		if (pipe(p->pipe_fd) == -1)
 			return (error_msg("Pipe error\n"));
@@ -108,29 +113,43 @@ int	teste(t_pipex *p)
 			return (error_msg("Fork error\n"));
 		if (pid == 0)
 			exec_child(p, p->cmds[i], i);
-		waitpid(pid, NULL, 0);
+		waitpid(pid, &p->status, 0);
+		if (WIFEXITED(p->status))
+			wstatus = WEXITSTATUS(p->status);
 		parent(p);
 		i++;
 	}
-	return (1);
+	return (wstatus);
 }
 
 int	main(int argc, char *argv[], char *envp[])
 {
 	t_pipex	p;
+	int t;
 
 	if (argc == 5)
 	{
 		open_files(argc, argv, &p);
 		init_struct(&p, argc, argv, envp);
-		if (!teste(&p))
+		t = teste(&p);
+		if (t != 0)
 		{
+			if (p.path != NULL)
+			{
+				free(p.path);
+				p.path = NULL;
+			}
 			free_cmds(&p);
-			return (1);
+			return (t);
 		}
 		close(p.fdout);
 		free_matrix(p.env_list);
 		free_cmds(&p);
+		if (p.path != NULL)
+		{
+			free(p.path);
+			p.path = NULL;
+		}
 		return (0);
 	}
 	error_msg("Invalid number of arguments\n");
