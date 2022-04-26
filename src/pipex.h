@@ -6,7 +6,7 @@
 /*   By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 18:20:27 by alida-si          #+#    #+#             */
-/*   Updated: 2022/04/25 21:42:26 by alida-si         ###   ########.fr       */
+/*   Updated: 2022/04/25 21:53:24 by alida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 typedef struct s_pipex
 {
 	char	**env_list;
-	char	*path;
+	char	**path;
 	char	**argv;
 	char	**envp;
 	int		argc;

@@ -6,7 +6,7 @@
 /*   By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/02 02:08:00 by alida-si          #+#    #+#             */
-/*   Updated: 2022/04/13 23:51:20 by alida-si         ###   ########.fr       */
+/*   Updated: 2022/04/26 00:49:25 by alida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void	free_matrix(char **ptr)
 		while (ptr[i])
 		{
 			free(ptr[i]);
+			ptr[i] = NULL;
 			i++;
 		}
 		free(ptr);

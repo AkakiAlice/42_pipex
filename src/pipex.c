@@ -6,7 +6,7 @@
 /*   By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 18:19:47 by alida-si          #+#    #+#             */
-/*   Updated: 2022/04/25 21:42:03 by alida-si         ###   ########.fr       */
+/*   Updated: 2022/04/26 20:44:19 by alida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,14 @@ int	check_cmd(t_pipex *p, int i)
 	j = 0;
 	while (p->env_list[j])
 	{
-		p->path = ft_strjoin(p->env_list[j], p->aux);
-		if (access(p->path, F_OK) == 0)
+		p->path[i] = ft_strjoin(p->env_list[j], p->aux);
+		if (access(p->path[i], F_OK) == 0)
 		{
 			free(p->aux);
 			return (1);
 		}
-		free(p->path);
+		free(p->path[i]);
+		p->path[i] = NULL;
 		j++;
 	}
 	if (p->aux != NULL)
@@ -58,6 +59,10 @@ int	get_comand(t_pipex *p)
 
 void	exec_child(t_pipex *p, char **cmd, int index)
 {
+	//ft_printf("%s\n", p->cmds[0][0]);
+	//ft_printf("--%s--\n", p->path[0]);
+	if ((p->path[0] == NULL))
+		p->path[0] = "/bin/";
 	close(p->pipe_fd[0]);
 	if (index == 0)
 	{
@@ -74,8 +79,12 @@ void	exec_child(t_pipex *p, char **cmd, int index)
 	else
 		dup2(p->pipe_fd[1], 1);
 	close(p->pipe_fd[1]);
-	if (execve(p->path, cmd, NULL) == -1)
+	if (execve(p->path[index], cmd, NULL) == -1)
 	{
+		free_cmds(p);
+		free_matrix(p->env_list);
+		free(p->path);
+	//	free_matrix(p->path);
 		exit(0);
 	}
 }
@@ -104,7 +113,19 @@ int	teste(t_pipex *p)
 			write(2, p->cmds[i][0], ft_strlen(p->cmds[i][0]));
 			write(2, ": command not found\n", 20);
 			if (i == 1)
+			{
+				if (p->path[0] != NULL)
+				{
+					free(p->path[0]);
+					//p->path[0] = NULL;
+				}
+				free(p->path);
+				//p->path = NULL;
+				//p->path = NULL;
+				free_matrix(p->env_list);
+				free_cmds(p);
 				exit(127);
+			}
 		}
 		if (pipe(p->pipe_fd) == -1)
 			return (error_msg("Pipe error\n"));
@@ -134,22 +155,19 @@ int	main(int argc, char *argv[], char *envp[])
 		t = teste(&p);
 		if (t != 0)
 		{
-			if (p.path != NULL)
-			{
-				free(p.path);
-				p.path = NULL;
-			}
+			free_matrix(p.path);
 			free_cmds(&p);
 			return (t);
 		}
 		close(p.fdout);
 		free_matrix(p.env_list);
 		free_cmds(&p);
-		if (p.path != NULL)
-		{
-			free(p.path);
-			p.path = NULL;
-		}
+		//ft_printf("%s\n", p.path[1]);
+		if (p.path[1] != NULL && p.path[0] == NULL)
+			free(p.path[1]);
+		free_matrix(p.path);
+		p.path = NULL;
+		//ft_printf("-%s-\n", p.path);
 		return (0);
 	}
 	error_msg("Invalid number of arguments\n");

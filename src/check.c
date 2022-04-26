@@ -6,7 +6,7 @@
 /*   By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/02 02:01:22 by alida-si          #+#    #+#             */
-/*   Updated: 2022/04/25 21:42:19 by alida-si         ###   ########.fr       */
+/*   Updated: 2022/04/25 22:31:11 by alida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ void	init_struct(t_pipex *p, int argc, char *argv[], char *envp[])
 	p->argc = argc;
 	p->infile = argv[1];
 	p->outfile = argv[argc];
-	p->path = NULL;
+	p->path = (char **)malloc(((sizeof(char *)) * (2 + 1)));
+	p->path[2] = NULL;
 	get_path(p);
 	get_comand(p);
 }
