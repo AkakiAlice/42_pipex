@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_split2.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/04/26 23:26:26 by alida-si          #+#    #+#             */
+/*   Updated: 2022/04/26 23:47:56 by alida-si         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 
 static size_t	token_count(char const *s, char c)
@@ -27,7 +39,6 @@ static size_t	token_count(char const *s, char c)
 	return (nb);
 }
 
-
 static char	**free_matrix(char **matrix, size_t i)
 {
 	while ((int)i >= 0)
@@ -41,6 +52,21 @@ static char	**free_matrix(char **matrix, size_t i)
 	return (matrix);
 }
 
+static void	quote_alloc(char const *s, char **matrix, char c, int i)
+{
+	int	len_ptr;
+
+	len_ptr = 0;
+	s++;
+	while (s[len_ptr] != '\'')
+		len_ptr++;
+	matrix[i] = ft_substr(s, 0, len_ptr);
+	s = s + len_ptr;
+	s++;
+	while (*s == c)
+		s++;
+}
+
 static void	letter_aloc(char **matrix, char const *s, char c, size_t nb_token)
 {
 	size_t	len_ptr;
@@ -50,9 +76,7 @@ static void	letter_aloc(char **matrix, char const *s, char c, size_t nb_token)
 	while (i < nb_token)
 	{
 		if (*s == c)
-		{
 			s++;
-		}
 		if (*s != c && *s != '\'')
 		{
 			len_ptr = 0;
@@ -63,21 +87,8 @@ static void	letter_aloc(char **matrix, char const *s, char c, size_t nb_token)
 				free_matrix(matrix, i);
 			s = s + len_ptr;
 		}
-		len_ptr = 0;
 		if (*s == '\'')
-		{
-			s++;
-			while (s[len_ptr] != '\'')
-				len_ptr++;
-			//s--;
-			//len_ptr++;
-			//len_ptr++;
-			matrix[i] = ft_substr(s, 0, len_ptr);
-			s = s + len_ptr;
-			s++;
-			while(*s == c)
-				s++;
-		}
+			quote_alloc(s, matrix, c, i);
 		i++;
 	}
 	matrix[i] = NULL;
@@ -97,16 +108,3 @@ char	**ft_split2(char const *s, char c)
 	letter_aloc(matrix, s, c, nb_token);
 	return (matrix);
 }
-
-/*int main()
-{
-	int i = 0;
-	char **a;
-	a = ft_split2("tr ' X' T", ' ');
-	while (a[i])
-	{
-		ft_printf("[%i] = [%s]\n", i, a[i]);
-		i++;
-	}
-	return(0);
-}*/
