@@ -6,7 +6,7 @@
 /*   By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/02 02:01:22 by alida-si          #+#    #+#             */
-/*   Updated: 2022/04/25 22:31:11 by alida-si         ###   ########.fr       */
+/*   Updated: 2022/04/26 22:32:07 by alida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ void	open_files(int argc, char *argv[], t_pipex *p)
 	if (p->fdin < 0)
 	{
 		perror(argv[1]);
-		exit(0);
+		//return ;
+		//exit(1);
 	}
 	p->fdout = open(argv[argc - 1], O_RDWR | O_CREAT | O_TRUNC, 0777);
 	if (p->fdout < 0)

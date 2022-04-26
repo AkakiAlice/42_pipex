@@ -6,7 +6,7 @@
 /*   By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 18:19:47 by alida-si          #+#    #+#             */
-/*   Updated: 2022/04/26 20:44:19 by alida-si         ###   ########.fr       */
+/*   Updated: 2022/04/26 23:01:32 by alida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,13 @@ void	exec_child(t_pipex *p, char **cmd, int index)
 {
 	//ft_printf("%s\n", p->cmds[0][0]);
 	//ft_printf("--%s--\n", p->path[0]);
+	if (index == 0 && p->fdin < 0)
+	{
+		free_cmds(p);
+		free_matrix(p->path);
+		free_matrix(p->env_list);
+		exit (EXIT_FAILURE);
+	}
 	if ((p->path[0] == NULL))
 		p->path[0] = "/bin/";
 	close(p->pipe_fd[0]);
@@ -134,12 +141,15 @@ int	teste(t_pipex *p)
 			return (error_msg("Fork error\n"));
 		if (pid == 0)
 			exec_child(p, p->cmds[i], i);
-		waitpid(pid, &p->status, 0);
+		/*waitpid(pid, &p->status, 0);
 		if (WIFEXITED(p->status))
-			wstatus = WEXITSTATUS(p->status);
+			wstatus = WEXITSTATUS(p->status);*/
 		parent(p);
 		i++;
 	}
+	waitpid(pid, &p->status, 0);
+	if (WIFEXITED(p->status))
+		wstatus = WEXITSTATUS(p->status);
 	return (wstatus);
 }
 
@@ -157,6 +167,7 @@ int	main(int argc, char *argv[], char *envp[])
 		{
 			free_matrix(p.path);
 			free_cmds(&p);
+			free_matrix(p.env_list);
 			return (t);
 		}
 		close(p.fdout);
