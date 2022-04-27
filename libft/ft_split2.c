@@ -6,7 +6,7 @@
 /*   By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 23:26:26 by alida-si          #+#    #+#             */
-/*   Updated: 2022/04/27 08:56:38 by alida-si         ###   ########.fr       */
+/*   Updated: 2022/04/27 19:27:16 by alida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static char	**free_matrix(char **matrix, size_t i)
 	return (matrix);
 }
 
-static void	quote_alloc(char const *s, char **matrix, char c, int i)
+static char const	*quote_alloc(char const *s, char **matrix, char c, int i)
 {
 	int	len_ptr;
 
@@ -65,12 +65,14 @@ static void	quote_alloc(char const *s, char **matrix, char c, int i)
 	s++;
 	while (*s == c)
 		s++;
+	return (s);
 }
 
 static void	letter_aloc(char **matrix, char const *s, char c, size_t nb_token)
 {
 	size_t	len_ptr;
 	size_t	i;
+	size_t	j;
 
 	i = 0;
 	while (i < nb_token)
@@ -87,20 +89,8 @@ static void	letter_aloc(char **matrix, char const *s, char c, size_t nb_token)
 				free_matrix(matrix, i);
 			s = s + len_ptr;
 		}
-		/*if (*s == '\'')
-			quote_alloc(s, matrix, c, i);*/
-		len_ptr = 0;
 		if (*s == '\'')
-		{
-			s++;
-			while (s[len_ptr] != '\'')
-				len_ptr++;
-			matrix[i] = ft_substr(s, 0, len_ptr);
-			s = s + len_ptr;
-			s++;
-			while(*s == c)
-				s++;
-		}
+			s = quote_alloc(s, matrix, c, i);
 		i++;
 	}
 	matrix[i] = NULL;
@@ -120,16 +110,3 @@ char	**ft_split2(char const *s, char c)
 	letter_aloc(matrix, s, c, nb_token);
 	return (matrix);
 }
-
-/*int main()
-{
-	int i = 0;
-	char **a;
-	a = ft_split2("tr ' ' x", ' ');
-	while (a[i])
-	{
-		ft_printf("[%i] = [%s]\n", i, a[i]);
-		i++;
-	}
-	return(0);
-}*/
