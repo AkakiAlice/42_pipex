@@ -6,47 +6,76 @@
 /*   By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/02 02:08:00 by alida-si          #+#    #+#             */
-/*   Updated: 2022/04/26 00:49:25 by alida-si         ###   ########.fr       */
+/*   Updated: 2022/04/27 18:44:59 by alida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	free_cmds(t_pipex *p)
+int	valid_cmd(t_pipex *p, int i)
 {
-	int	i;
+	int		j;
 
-	if (p->cmds)
+	p->aux = ft_strjoin("/", p->cmds[i][0]);
+	j = 0;
+	while (p->env_list[j])
 	{
-		i = 0;
-		while (p->cmds[i])
+		p->path[i] = ft_strjoin(p->env_list[j], p->aux);
+		if (access(p->path[i], F_OK) == 0)
 		{
-			free_matrix(p->cmds[i]);
-			i++;
+			free(p->aux);
+			return (1);
 		}
-		free(p->cmds);
+		free(p->path[i]);
+		p->path[i] = NULL;
+		j++;
 	}
+	if (p->aux != NULL)
+		free(p->aux);
+	return (0);
 }
 
-void	free_matrix(char **ptr)
+int	get_comand(t_pipex *p)
 {
 	int	i;
+	int	j;
 
-	if (ptr != NULL)
+	i = 2;
+	j = 0;
+	p->cmds = (char ***)malloc(((p->argc - 2) * sizeof(char **)));
+	while (i < (p->argc - 1))
 	{
-		i = 0;
-		while (ptr[i])
-		{
-			free(ptr[i]);
-			ptr[i] = NULL;
-			i++;
-		}
-		free(ptr);
+		p->cmds[j] = ft_split2(p->argv[i], ' ');
+		i++;
+		j++;
 	}
+	p->cmds[j] = NULL;
+	return (1);
+}
+
+void	get_path(t_pipex *p)
+{
+	int		i;
+	char	*aux;
+
+	i = 0;
+	while (p->envp[i])
+	{
+		if (ft_strncmp("PATH", p->envp[i], 4) == 0)
+			aux = p->envp[i];
+		i++;
+	}
+	p->env_list = ft_split(aux, ':');
 }
 
 int	error_msg(char *error_str)
 {
 	write(2, error_str, ft_strlen(error_str));
 	return (0);
+}
+
+void	close_files(t_pipex *p)
+{
+	close(p->fdin);
+	close(p->fdout);
 }

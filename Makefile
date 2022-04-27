@@ -6,7 +6,7 @@
 #    By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/29 18:20:49 by alida-si          #+#    #+#              #
-#    Updated: 2022/04/14 03:47:36 by alida-si         ###   ########.fr        #
+#    Updated: 2022/04/27 18:45:37 by alida-si         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,8 +19,9 @@ SRC_DIR =	./src
 OBJ_DIR =	./obj
 
 SRC_FILES =	pipex.c \
-			check.c \
-			utils.c
+			utils.c \
+			free.c \
+			main.c
 
 SRC =		$(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJ =		$(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)

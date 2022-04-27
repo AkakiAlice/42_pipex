@@ -6,7 +6,7 @@
 /*   By: alida-si <alida-si@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 23:26:26 by alida-si          #+#    #+#             */
-/*   Updated: 2022/04/26 23:47:56 by alida-si         ###   ########.fr       */
+/*   Updated: 2022/04/27 08:56:38 by alida-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,20 @@ static void	letter_aloc(char **matrix, char const *s, char c, size_t nb_token)
 				free_matrix(matrix, i);
 			s = s + len_ptr;
 		}
+		/*if (*s == '\'')
+			quote_alloc(s, matrix, c, i);*/
+		len_ptr = 0;
 		if (*s == '\'')
-			quote_alloc(s, matrix, c, i);
+		{
+			s++;
+			while (s[len_ptr] != '\'')
+				len_ptr++;
+			matrix[i] = ft_substr(s, 0, len_ptr);
+			s = s + len_ptr;
+			s++;
+			while(*s == c)
+				s++;
+		}
 		i++;
 	}
 	matrix[i] = NULL;
@@ -108,3 +120,16 @@ char	**ft_split2(char const *s, char c)
 	letter_aloc(matrix, s, c, nb_token);
 	return (matrix);
 }
+
+/*int main()
+{
+	int i = 0;
+	char **a;
+	a = ft_split2("tr ' ' x", ' ');
+	while (a[i])
+	{
+		ft_printf("[%i] = [%s]\n", i, a[i]);
+		i++;
+	}
+	return(0);
+}*/
